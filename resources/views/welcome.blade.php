@@ -14,7 +14,10 @@
     </head>
     <body class="antialiased">
         <div id="app">
-            <example-component></example-component>
+            <router-link to="/">Home</router-link>
+            <router-link to="/about">About</router-link>
+            <hr>
+            <router-view></router-view>
         </div>
 
         <script src="{{asset('js/app.js')}}"></script>
