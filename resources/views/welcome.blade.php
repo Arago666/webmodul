@@ -21,5 +21,7 @@
         </div>
 
         <script src="{{asset('js/app.js')}}"></script>
+
+    <button class="btn btn-success">Hello World!</button>
     </body>
 </html>
