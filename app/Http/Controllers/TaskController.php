@@ -7,6 +7,10 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
+    public function getTasks()
+    {
+        return response()->json(Task::latest()->get());
+    }
     public function storeTask(Request $request)
     {
         Task::create([
