@@ -33,7 +33,10 @@
                                     <td>
                                         {{task.detail.length <= 10 ? task.detail : task.detail.substr(0, 10) + '...'}}
                                     </td>
-                                    <td></td>
+                                    <td>
+                                        <button @click="editTask(task)" class="btn btn-primary btn-sm mx-1">Edit</button>
+                                        <button @click="removeTask(task)" class="btn btn-danger btn-sm mx-1">Delete</button>
+                                    </td>
                                 </tr>
                             </tbody>
 
@@ -46,14 +49,15 @@
 
     <!-- Modal -->
     <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div :class="`modal-dialog modal-dialog-centered ${!deleteMode ? 'modal-lg' : 'modal-sm'}`">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="taskModalLabel">Create new Task</h1>
+                    <h5 class="modal-title fs-5" id="taskModalLabel" v-show="!deleteMode">{{!editMode ? 'Create new Task' : 'Update Task'}}</h5>
+                    <h5 class="modal-title fs-5" id="taskModalLabel" v-show="deleteMode">Delete Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="row" v-show="!deleteMode">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="title">Заголовок</label>
@@ -76,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" v-show="!deleteMode">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="detail">Описание</label>
@@ -84,10 +88,13 @@
                             </div>
                         </div>
                     </div>
+
+                    <h5 class="text-center" v-show="deleteMode">Are you sure you want to delete this task?</h5>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" @click="storeTask()" class="btn btn-primary">Create Task</button>
+                    <button type="button" @click="!editMode ? storeTask() : updateTask()" class="btn btn-primary" v-show="!deleteMode">{{!editMode ? 'Create Task' : 'Save changes'}}</button>
+                    <button type="button" @click="deleteTask()" class="btn btn-danger" v-show="deleteMode">Delete Task</button>
                 </div>
             </div>
         </div>
@@ -101,7 +108,10 @@ export default {
     }),
     data() {
         return {
+            editMode: false,
+            deleteMode: false,
             taskData: {
+                id: '',
                 title: '',
                 date: '',
                 time: '',
@@ -126,8 +136,59 @@ export default {
                 console.log(errors)
             })
         },
-        createTask() {
+        removeTask(task) {
+            this.deleteMode = true
+            this.taskData.id = task.id
+            $('#taskModal').modal('show')
+        },
+        deleteTask(task) {
+            axios.post('api/deleteTask/' + this.taskData.id).then(response => {
+                this.getTasks()
+                console.log(response.data)
+            }).catch(errors => {
+                console.log(errors)
+            }).finally( () => {
+                $('#taskModal').modal('hide')
+            });
+        },
+        updateTask() {
+            this.taskData.title == '' ? this.taskErrors.title = true : this.taskErrors.title = false
+            this.taskData.date == '' ? this.taskErrors.date = true : this.taskErrors.date = false
+            this.taskData.time == '' ? this.taskErrors.time = true : this.taskErrors.time = false
+
+            if (this.taskData.title && this.taskData.date && this.taskData.time) {
+                axios.post('api/updateTask/' + this.taskData.id, this.taskData).then(response => {
+                    this.getTasks()
+                    console.log(response.data)
+                }).catch(errors => {
+                    console.log(errors)
+                }).finally( () => {
+                    $('#taskModal').modal('hide')
+                });
+            }
+        },
+        editTask(task) {
+            this.deleteMode = false
+            this.editMode = true
             this.taskData = {
+                id: task.id,
+                title: task.title,
+                date: task.date,
+                time: task.time,
+                detail: task.detail,
+            }
+            this.taskErrors = {
+                title: false,
+                date: false,
+                time: false,
+            }
+            $('#taskModal').modal('show')
+        },
+        createTask() {
+            this.deleteMode = false
+            this.editMode = false
+            this.taskData = {
+                id: '',
                 title: '',
                 date: '',
                 time: '',
@@ -152,6 +213,7 @@ export default {
                     console.log(errors)
                 }).finally( () => {
                     $('#taskModal').modal('hide')
+                    this.getTasks()
                 });
             }
         },
