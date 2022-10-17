@@ -4,15 +4,15 @@ import {createApp, CreateApp} from 'vue'
 import * as VueRouter from 'vue-router'
 
 import ExampleComponent from './components/ExampleComponent.vue'
-import AboutComponent from './components/AboutComponent.vue'
+import TaskComponent from './components/TaskComponent.vue'
 
 const routes = [
     {path: '/', component: ExampleComponent},
-    {path: '/about', component: AboutComponent},
+    {path: '/tasks', component: TaskComponent},
 ]
 
 const router = VueRouter.createRouter({
-    history: VueRouter.createWebHistory('/webmodul/public/'),
+    history: VueRouter.createWebHistory('/'),
     routes,
 })
 
