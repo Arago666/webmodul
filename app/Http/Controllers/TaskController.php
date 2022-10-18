@@ -9,8 +9,9 @@ class TaskController extends Controller
 {
     public function getTasks()
     {
-        return response()->json(Task::latest()->get());
+        return response()->json(Task::latest()->with('sub_tasks')->get());
     }
+
     public function storeTask(Request $request)
     {
         Task::create([
