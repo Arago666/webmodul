@@ -24,3 +24,9 @@ Route::post('storeTask', [TaskController::class, 'storeTask'])->name('storeTask'
 Route::post('updateTask/{id}', [TaskController::class, 'updateTask'])->name('updateTask');
 Route::post('deleteTask/{id}', [TaskController::class, 'deleteTask'])->name('deleteTask');
 
+Route::post('storeSubTask', [TaskController::class, 'storeSubTask']);
+Route::post('updateSubTask/{id}', [TaskController::class, 'updateSubTask']);
+Route::post('deleteSubTask/{id}', [TaskController::class, 'deleteSubTask']);
+Route::post('markAsComplete/{id}', [TaskController::class, 'markAsComplete']);
+Route::post('markAsIncomplete/{id}', [TaskController::class, 'markAsIncomplete']);
+

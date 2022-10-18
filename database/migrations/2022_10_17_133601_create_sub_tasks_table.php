@@ -18,6 +18,7 @@ class CreateSubTasksTable extends Migration
             $table->integer('task_id');
             $table->string('title');
             $table->text('detail');
+            $table->boolean('status')->default('0');
             $table->string('start_date');
             $table->string('end_date');
             $table->timestamps();

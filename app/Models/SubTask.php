@@ -13,6 +13,7 @@ class SubTask extends Model
         'task_id',
         'title',
         'detail',
+        'status',
         'start_date',
         'end_date',
     ];
